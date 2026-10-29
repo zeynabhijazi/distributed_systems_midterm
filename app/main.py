@@ -146,3 +146,30 @@ def head_chunk(chunk_hash: str):
         }
     )
 
+@app.delete("/chunks/{chunk_hash}")
+def delete_chunk(chunk_hash: str):
+
+    # Validate SHA-256 format
+    if len(chunk_hash) != 64 or any(
+        c not in "0123456789abcdef" for c in chunk_hash
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid SHA-256 hash"
+        )
+
+    chunk_path = STORAGE_DIR / chunk_hash
+
+    if not chunk_path.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail="Chunk not found"
+        )
+
+    chunk_path.unlink()
+
+    return {
+        "message": "Chunk deleted successfully",
+        "hash": chunk_hash
+    }
+
