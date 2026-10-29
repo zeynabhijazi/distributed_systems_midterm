@@ -1,12 +1,11 @@
 
+import os
 import hashlib
 import httpx
 
 from storage.chunker import chunk_file
 from storage.consistent_hash import ConsistentHashRing
 
-
-import os
 
 IN_DOCKER = os.getenv("IN_DOCKER", "false").lower() == "true"
 
@@ -20,43 +19,39 @@ else:
         f"node{i}": f"http://localhost:{8000+i}"
         for i in range(1, 5)
     }
-REPLICATION_FACTOR = 3
+
+N = 3
+W = 2
+R = 2
 
 
 def distribute_file(file_path):
     ring = ConsistentHashRing(list(NODES.keys()))
-
     results = []
     total_bytes = 0
 
-    with httpx.Client(timeout=30.0) as client:
+    with httpx.Client(timeout=5.0) as client:
         for index, chunk in enumerate(chunk_file(file_path)):
             chunk_hash = chunk["hash"]
-            target_nodes = ring.get_nodes(
-                chunk_hash,
-                REPLICATION_FACTOR
-            )
-
+            target_nodes = ring.get_nodes(chunk_hash, N)
             successful_nodes = []
 
             for node in target_nodes:
-                url = f"{NODES[node]}/chunks/{chunk_hash}"
-
                 try:
                     response = client.put(
-                        url,
+                        f"{NODES[node]}/chunks/{chunk_hash}",
                         content=chunk["data"]
                     )
                     response.raise_for_status()
                     successful_nodes.append(node)
 
                 except httpx.HTTPError as error:
-                    print(f"Failed on {node}: {error}")
+                    print(f"Write failed on {node}: {error}")
 
-            if len(successful_nodes) != REPLICATION_FACTOR:
+            if len(successful_nodes) < W:
                 raise RuntimeError(
-                    f"Chunk {index} has only "
-                    f"{len(successful_nodes)} replicas"
+                    f"Write quorum failed for chunk {index}: "
+                    f"{len(successful_nodes)}/{W}"
                 )
 
             results.append({
@@ -70,8 +65,7 @@ def distribute_file(file_path):
 
             print(
                 f"Chunk {index + 1}: "
-                f"{chunk_hash[:12]}... -> "
-                f"{successful_nodes}"
+                f"{len(successful_nodes)}/{N} replicas written"
             )
 
     return {
@@ -82,10 +76,10 @@ def distribute_file(file_path):
 
 
 def download_file(manifest, output_path):
-    with httpx.Client(timeout=30.0) as client:
+    with httpx.Client(timeout=5.0) as client:
         with open(output_path, "wb") as output:
             for chunk in manifest["chunks"]:
-                recovered = False
+                verified = []
 
                 for node in chunk["nodes"]:
                     try:
@@ -97,18 +91,23 @@ def download_file(manifest, output_path):
                         data = response.content
 
                         if hashlib.sha256(data).hexdigest() != chunk["hash"]:
+                            print(f"Corrupt chunk on {node}")
                             continue
 
-                        output.write(data)
-                        recovered = True
-                        break
+                        verified.append(data)
 
-                    except httpx.HTTPError:
-                        continue
+                        if len(verified) >= R:
+                            break
 
-                if not recovered:
+                    except httpx.HTTPError as error:
+                        print(f"Read failed on {node}: {error}")
+
+                if len(verified) < R:
                     raise RuntimeError(
-                        f"Cannot recover chunk {chunk['hash']}"
+                        f"Read quorum failed for {chunk['hash']}: "
+                        f"{len(verified)}/{R}"
                     )
+
+                output.write(verified[0])
 
     print(f"File reconstructed: {output_path}")
