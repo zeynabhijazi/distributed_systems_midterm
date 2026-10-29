@@ -1,12 +1,68 @@
 
+import os
 from fastapi import FastAPI, Request, HTTPException, Response
 from pathlib import Path
 import hashlib
+import asyncio
+import shutil
+import httpx
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Distributed Storage Node")
+
+METADATA_URL = os.getenv(
+    "METADATA_URL",
+    "http://localhost:8005"
+)
+
+
+async def send_heartbeats():
+    async with httpx.AsyncClient(timeout=3.0) as client:
+        while True:
+            try:
+                free_space = shutil.disk_usage(
+                    STORAGE_DIR
+                ).free
+
+                chunk_count = sum(
+                    1 for f in STORAGE_DIR.iterdir()
+                    if f.is_file()
+                )
+
+                await client.post(
+                    f"{METADATA_URL}/heartbeat",
+                    json={
+                        "node_id": NODE_ID,
+                        "free_space": free_space,
+                        "chunk_count": chunk_count
+                    }
+                )
+
+            except Exception as e:
+                print(f"Heartbeat failed: {e}")
+
+            await asyncio.sleep(5)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(send_heartbeats())
+    yield
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+
+
+app = FastAPI(
+    title="Distributed Storage Node",
+    lifespan=lifespan
+)
 
 # Directory for storing chunks
-STORAGE_DIR = Path("data/node1")
+NODE_ID = os.getenv("NODE_ID", "node1")
+STORAGE_DIR = Path(os.getenv("STORAGE_DIR", "data/node1"))
+
 STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -16,12 +72,11 @@ def root():
         "message": "Storage Node is running"
     }
 
-
 @app.get("/health")
 def health():
     return {
         "status": "healthy",
-        "node": "node1"
+        "node": NODE_ID
     }
 
 

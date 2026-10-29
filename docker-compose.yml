@@ -5,14 +5,12 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
- 
   grafana:
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
- 
   kafka:
     image: apache/kafka:latest
     ports:
@@ -29,12 +27,90 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
- 
+
   rabbitmq:
     image: rabbitmq:4-management
     ports:
       - "5672:5672"
       - "15672:15672"
- 
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: storageuser
+      POSTGRES_PASSWORD: storagepass
+      POSTGRES_DB: storagedb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U storageuser -d storagedb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  metadata:
+    build: .
+    command: python -m uvicorn metadata.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8005:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://storageuser:storagepass@postgres:5432/storagedb
+      IN_DOCKER: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  node1:
+    build: .
+    environment:
+      NODE_ID: node1
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./data/node1:/data
+    depends_on:
+      - metadata
+
+  node2:
+    build: .
+    environment:
+      NODE_ID: node2
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./data/node2:/data
+    depends_on:
+      - metadata
+
+  node3:
+    build: .
+    environment:
+      NODE_ID: node3
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./data/node3:/data
+    depends_on:
+      - metadata
+
+  node4:
+    build: .
+    environment:
+      NODE_ID: node4
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+    ports:
+      - "8004:8000"
+    volumes:
+      - ./data/node4:/data
+    depends_on:
+      - metadata
 volumes:
   grafana-data:
+  postgres_data:

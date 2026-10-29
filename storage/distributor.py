@@ -6,13 +6,20 @@ from storage.chunker import chunk_file
 from storage.consistent_hash import ConsistentHashRing
 
 
-NODES = {
-    "node1": "http://localhost:8001",
-    "node2": "http://localhost:8002",
-    "node3": "http://localhost:8003",
-    "node4": "http://localhost:8004",
-}
+import os
 
+IN_DOCKER = os.getenv("IN_DOCKER", "false").lower() == "true"
+
+if IN_DOCKER:
+    NODES = {
+        f"node{i}": f"http://node{i}:8000"
+        for i in range(1, 5)
+    }
+else:
+    NODES = {
+        f"node{i}": f"http://localhost:{8000+i}"
+        for i in range(1, 5)
+    }
 REPLICATION_FACTOR = 3
 
 
