@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ ./app/
 COPY metadata/ ./metadata/
 COPY storage/ ./storage/
-
+COPY jobs/ /app/jobs/
 ENV PYTHONUNBUFFERED=1
 
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

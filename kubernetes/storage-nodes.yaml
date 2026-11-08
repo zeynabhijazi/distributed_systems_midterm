@@ -1,0 +1,431 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node1-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node1
+  template:
+    metadata:
+      labels:
+        app: node1
+    spec:
+      containers:
+        - name: node1
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node1"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node1-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node1
+spec:
+  selector:
+    app: node1
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node2-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node2
+  template:
+    metadata:
+      labels:
+        app: node2
+    spec:
+      containers:
+        - name: node2
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node2"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node2-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node2
+spec:
+  selector:
+    app: node2
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node3-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node3
+  template:
+    metadata:
+      labels:
+        app: node3
+    spec:
+      containers:
+        - name: node3
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node3"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node3-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node3
+spec:
+  selector:
+    app: node3
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node4-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node4
+  template:
+    metadata:
+      labels:
+        app: node4
+    spec:
+      containers:
+        - name: node4
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node4"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node4-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node4
+spec:
+  selector:
+    app: node4
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node5-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node5
+  template:
+    metadata:
+      labels:
+        app: node5
+    spec:
+      containers:
+        - name: node5
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node5"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node5-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node5
+spec:
+  selector:
+    app: node5
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node6-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node6
+  template:
+    metadata:
+      labels:
+        app: node6
+    spec:
+      containers:
+        - name: node6
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node6"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node6-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node6
+spec:
+  selector:
+    app: node6
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP

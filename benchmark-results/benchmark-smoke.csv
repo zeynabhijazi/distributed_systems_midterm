@@ -1,0 +1,11 @@
+operation,file,size_bytes,duration_seconds,success
+upload,benchmark-00000.bin,16384,0.4941,True
+upload,benchmark-00001.bin,20480,0.1027,True
+upload,benchmark-00002.bin,6144,0.1283,True
+upload,benchmark-00003.bin,31744,0.0743,True
+upload,benchmark-00004.bin,37888,0.0673,True
+download,benchmark-00000.bin,16384,0.097,True
+download,benchmark-00001.bin,20480,0.0358,True
+download,benchmark-00002.bin,6144,0.0375,True
+download,benchmark-00003.bin,31744,0.0453,True
+download,benchmark-00004.bin,37888,0.0307,True

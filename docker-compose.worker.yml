@@ -1,0 +1,17 @@
+
+services:
+  metadata:
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+
+  repair-worker:
+    build: .
+    command: python -m jobs.worker
+    environment:
+      DATABASE_URL: postgresql+psycopg://storageuser:storagepass@postgres:5432/storagedb
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      IN_DOCKER: "true"
+    depends_on:
+      - rabbitmq
+      - postgres
+    restart: unless-stopped

@@ -57,6 +57,8 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://storageuser:storagepass@postgres:5432/storagedb
       IN_DOCKER: "true"
+      API_KEY: exam-demo-key
+      RATE_LIMIT: "20000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -111,6 +113,33 @@ services:
       - ./data/node4:/data
     depends_on:
       - metadata
+  
+  node5:
+    build: .
+    environment:
+      NODE_ID: node5
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+    ports:
+      - "8006:8000"
+    volumes:
+      - ./data/node5:/data
+    depends_on:
+      - metadata
+
+  node6:
+    build: .
+    environment:
+      NODE_ID: node6
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+    ports:
+      - "8007:8000"
+    volumes:
+      - ./data/node6:/data
+    depends_on:
+      - metadata
+
 volumes:
   grafana-data:
   postgres_data:

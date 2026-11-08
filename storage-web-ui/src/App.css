@@ -1,0 +1,161 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  color: #222;
+}
+
+.container {
+  max-width: 950px;
+  margin: 40px auto;
+  padding: 25px;
+  background: white;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin-top: 25px;
+}
+
+h3 {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 18px;
+  cursor: pointer;
+  background: #eeeeee;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #dddddd;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.summary {
+  margin-top: 25px;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #eee;
+}
+
+.error {
+  color: #c62828;
+  margin-top: 12px;
+}
+
+.success {
+  color: #2e7d32;
+  margin-top: 12px;
+}
+
+.bucket-section,
+.upload-section,
+.objects-section,
+.search-section {
+  margin-top: 35px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.bucket-section form,
+.search-section form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.bucket-section input,
+.search-section input {
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.bucket-section button {
+  margin-right: 10px;
+}
+
+.upload-section form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.upload-section select,
+.upload-section input[type="file"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 250px;
+  max-width: 100%;
+}
+
+.upload-section label {
+  font-weight: bold;
+}
+
+.upload-section button {
+  margin-top: 8px;
+}
+
+.objects-section table,
+.search-section table {
+  margin-top: 20px;
+}
+
+.objects-section td,
+.search-section td {
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-button {
+  color: #b71c1c;
+  border-color: #b71c1c;
+}
+
+.delete-button:hover {
+  background: #ffebee;
+}
+
+.note {
+  color: #666;
+  font-size: 13px;
+  margin-top: 15px;
+}

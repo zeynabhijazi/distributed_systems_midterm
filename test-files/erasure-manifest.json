@@ -1,0 +1,36 @@
+{
+  "original_hash": "66da26a95e9c2d4d4417be86c00060e887e4507aa20676707744fa03eb863e2c",
+  "original_size": 400000,
+  "shards": [
+    {
+      "index": 0,
+      "node": "node1",
+      "hash": "192be0ac3c077c58d62ac16c1bbf95d9204ef778e164de76f63cac08bc8cd8cf"
+    },
+    {
+      "index": 1,
+      "node": "node2",
+      "hash": "192be0ac3c077c58d62ac16c1bbf95d9204ef778e164de76f63cac08bc8cd8cf"
+    },
+    {
+      "index": 2,
+      "node": "node3",
+      "hash": "192be0ac3c077c58d62ac16c1bbf95d9204ef778e164de76f63cac08bc8cd8cf"
+    },
+    {
+      "index": 3,
+      "node": "node4",
+      "hash": "192be0ac3c077c58d62ac16c1bbf95d9204ef778e164de76f63cac08bc8cd8cf"
+    },
+    {
+      "index": 4,
+      "node": "node5",
+      "hash": "192be0ac3c077c58d62ac16c1bbf95d9204ef778e164de76f63cac08bc8cd8cf"
+    },
+    {
+      "index": 5,
+      "node": "node6",
+      "hash": "192be0ac3c077c58d62ac16c1bbf95d9204ef778e164de76f63cac08bc8cd8cf"
+    }
+  ]
+}

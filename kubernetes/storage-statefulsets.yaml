@@ -1,0 +1,341 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node1
+spec:
+  serviceName: node1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node1
+  template:
+    metadata:
+      labels:
+        app: node1
+    spec:
+      containers:
+        - name: node1
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node1"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node1-pvc
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node2
+spec:
+  serviceName: node2
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node2
+  template:
+    metadata:
+      labels:
+        app: node2
+    spec:
+      containers:
+        - name: node2
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node2"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node2-pvc
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node3
+spec:
+  serviceName: node3
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node3
+  template:
+    metadata:
+      labels:
+        app: node3
+    spec:
+      containers:
+        - name: node3
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node3"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node3-pvc
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node4
+spec:
+  serviceName: node4
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node4
+  template:
+    metadata:
+      labels:
+        app: node4
+    spec:
+      containers:
+        - name: node4
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node4"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node4-pvc
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node5
+spec:
+  serviceName: node5
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node5
+  template:
+    metadata:
+      labels:
+        app: node5
+    spec:
+      containers:
+        - name: node5
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node5"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node5-pvc
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node6
+spec:
+  serviceName: node6
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node6
+  template:
+    metadata:
+      labels:
+        app: node6
+    spec:
+      containers:
+        - name: node6
+          image: distributed-storage:latest
+          imagePullPolicy: Never
+          command:
+            - python
+            - -m
+            - uvicorn
+            - app.main:app
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ID
+              value: "node6"
+            - name: STORAGE_DIR
+              value: "/data"
+            - name: METADATA_URL
+              value: "http://metadata:8000"
+          volumeMounts:
+            - name: storage-data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: storage-data
+          persistentVolumeClaim:
+            claimName: node6-pvc
